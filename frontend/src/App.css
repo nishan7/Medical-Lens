@@ -1,0 +1,356 @@
+:root {
+  --page-bg: linear-gradient(180deg, #f5f9ff 0%, #edf3fb 100%);
+  --panel-bg: #ffffffcc;
+  --panel-border: #d5e0ef;
+  --text-primary: #172033;
+  --text-muted: #5f7088;
+  --assistant-bg: #ffffff;
+  --assistant-border: #d6e1f0;
+  --user-bg: #2563eb;
+  --user-text: #f7fbff;
+  --input-bg: #ffffff;
+  --input-border: #c9d7ea;
+  --code-bg: #eef3fa;
+  --table-stripe: #f7faff;
+  --focus: #3b82f6;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 22px 16px;
+  background: var(--page-bg);
+  color: var(--text-primary);
+  font-family: 'Avenir Next', 'SF Pro Text', 'Segoe UI', sans-serif;
+}
+
+.app-header {
+  width: 100%;
+  max-width: 980px;
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.app-header p {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.chat-container {
+  width: 100%;
+  max-width: 980px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 18px;
+  box-shadow:
+    0 24px 60px rgba(50, 74, 110, 0.15),
+    0 8px 20px rgba(50, 74, 110, 0.08);
+  padding: 14px;
+}
+
+.chat-window {
+  min-height: 280px;
+  max-height: 64vh;
+  overflow-y: auto;
+  padding: 10px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-window::-webkit-scrollbar {
+  width: 9px;
+}
+
+.chat-window::-webkit-scrollbar-thumb {
+  background: #c7d7ea;
+  border-radius: 99px;
+}
+
+.bubble {
+  max-width: min(820px, 88%);
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.bubble-meta {
+  font-size: 0.78rem;
+  margin-bottom: 0.45rem;
+  opacity: 0.86;
+}
+
+.bubble-user .bubble-meta {
+  color: #e8f1ff;
+}
+
+.bubble-assistant .bubble-meta {
+  color: #637793;
+}
+
+.bubble-user {
+  align-self: flex-end;
+  color: var(--user-text);
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  border-top-right-radius: 6px;
+}
+
+.bubble-assistant {
+  align-self: flex-start;
+  color: var(--text-primary);
+  background: var(--assistant-bg);
+  border: 1px solid var(--assistant-border);
+  border-top-left-radius: 6px;
+}
+
+.bubble-markdown > :first-child {
+  margin-top: 0;
+}
+
+.bubble-markdown > :last-child {
+  margin-bottom: 0;
+}
+
+.bubble-markdown p {
+  margin: 0.44rem 0;
+}
+
+.bubble-markdown h1,
+.bubble-markdown h2,
+.bubble-markdown h3,
+.bubble-markdown h4 {
+  margin: 0.65rem 0 0.35rem;
+  line-height: 1.3;
+}
+
+.bubble-markdown ul,
+.bubble-markdown ol {
+  margin: 0.42rem 0;
+  padding-left: 1.2rem;
+}
+
+.bubble-markdown li {
+  margin: 0.2rem 0;
+}
+
+.bubble-markdown li > p {
+  margin: 0.15rem 0;
+}
+
+.bubble-markdown blockquote {
+  margin: 0.5rem 0;
+  padding: 0.4rem 0.75rem;
+  border-left: 3px solid #9db7dd;
+  background: #f4f8ff;
+  color: #44536b;
+}
+
+.bubble-markdown pre {
+  margin: 0.55rem 0;
+  padding: 0.7rem 0.8rem;
+  border-radius: 10px;
+  overflow-x: auto;
+  background: #f1f5fb;
+  border: 1px solid #d8e3f2;
+}
+
+.bubble-user .bubble-markdown pre {
+  background: #2958b7;
+  border-color: #4d78d2;
+}
+
+.bubble-markdown code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.88em;
+}
+
+.bubble-markdown :not(pre) > code {
+  padding: 0.08rem 0.28rem;
+  border-radius: 6px;
+  background: var(--code-bg);
+}
+
+.bubble-user .bubble-markdown :not(pre) > code {
+  background: rgba(255, 255, 255, 0.14);
+  color: #f7fbff;
+}
+
+.bubble-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.55rem 0;
+  display: block;
+  overflow-x: auto;
+  font-size: 0.93rem;
+}
+
+.bubble-markdown th,
+.bubble-markdown td {
+  border: 1px solid #d8e2f0;
+  padding: 0.4rem 0.48rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.bubble-markdown thead th {
+  background: #eff5fd;
+}
+
+.bubble-markdown tbody tr:nth-child(even) {
+  background: var(--table-stripe);
+}
+
+.input-area {
+  border-top: 1px solid #d6e1f0;
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attachment-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-button {
+  border: 1px dashed #9bb2d3;
+  color: #23406e;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #f6f9ff;
+}
+
+.file-button:hover {
+  border-color: #6f92c4;
+  background: #eef4ff;
+}
+
+.file-input {
+  display: none;
+}
+
+.attachment-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f3f7fe;
+  border: 1px solid #d4e0f2;
+  border-radius: 999px;
+  padding: 5px 10px;
+}
+
+.attachment-name {
+  font-size: 0.82rem;
+  color: #1f3558;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachment-status {
+  font-size: 0.75rem;
+  color: #4f678b;
+}
+
+.chip-remove {
+  border: none;
+  background: transparent;
+  color: #294f85;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.attachment-error {
+  font-size: 0.82rem;
+  color: #a92525;
+  background: #fff2f2;
+  border: 1px solid #f1c9c9;
+  border-radius: 8px;
+  padding: 6px 9px;
+}
+
+.text-input {
+  width: 100%;
+  resize: vertical;
+  min-height: 66px;
+  max-height: 180px;
+  border-radius: 12px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  padding: 10px 12px;
+  color: var(--text-primary);
+  font-size: 0.98rem;
+  line-height: 1.45;
+}
+
+.text-input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.input-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.send-button {
+  border-radius: 999px;
+  padding: 8px 18px;
+  border: none;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: #f7fbff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.send-button:disabled {
+  opacity: 0.64;
+  cursor: default;
+}
+
+@media (max-width: 780px) {
+  .app {
+    padding: 12px 8px;
+  }
+
+  .chat-container {
+    border-radius: 12px;
+    padding: 10px;
+  }
+
+  .bubble {
+    max-width: 94%;
+    font-size: 0.96rem;
+  }
+
+  .app-header p {
+    font-size: 0.85rem;
+  }
+}

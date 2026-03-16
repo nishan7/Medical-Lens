@@ -1,0 +1,26 @@
+:root {
+  color-scheme: light;
+  font-family: 'Avenir Next', 'SF Pro Text', 'Segoe UI', sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  color: #1a2433;
+  background: #eef4fb;
+}

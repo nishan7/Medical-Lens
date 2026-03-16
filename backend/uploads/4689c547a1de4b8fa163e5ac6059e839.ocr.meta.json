@@ -1,0 +1,10 @@
+{
+  "image_id": "4689c547a1de4b8fa163e5ac6059e839",
+  "filename": "claims.pdf",
+  "stored_filename": "4689c547a1de4b8fa163e5ac6059e839.pdf",
+  "content_type": "application/pdf",
+  "ocr_status": "failed",
+  "ocr_error": "500 Server Error: Internal Server Error for url: https://ai.api.nvidia.com/v1/cv/nvidia/ocdrnet",
+  "page_count": null,
+  "warnings": []
+}

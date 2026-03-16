@@ -1,0 +1,8 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - heading "LLM Chat" [level=1] [ref=e5]
+    - paragraph [ref=e6]: Minimal chat with streaming
+  - main [ref=e7]:
+    - generic [ref=e9]:
+      - textbox "Type your message..." [ref=e10]
+      - button "Send" [ref=e12] [cursor=pointer]

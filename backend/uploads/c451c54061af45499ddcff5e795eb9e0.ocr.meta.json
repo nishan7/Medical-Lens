@@ -1,0 +1,10 @@
+{
+  "image_id": "c451c54061af45499ddcff5e795eb9e0",
+  "filename": "claims.pdf",
+  "stored_filename": "c451c54061af45499ddcff5e795eb9e0.pdf",
+  "content_type": "application/pdf",
+  "ocr_status": "failed",
+  "ocr_error": "_rasterize_pdf_pages() got an unexpected keyword argument 'max_pdf_pages'. Did you mean 'max_pages'?",
+  "page_count": null,
+  "warnings": []
+}

@@ -1,0 +1,36 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - heading "LLM Chat" [level=1] [ref=e5]
+    - paragraph [ref=e6]: Minimal chat with streaming
+  - main [ref=e7]:
+    - generic [ref=e8]:
+      - paragraph [ref=e15]: What is the cheapest TB test with insurance?
+      - generic [ref=e18]:
+        - paragraph [ref=e19]:
+          - strong [ref=e20]: Cheapest TB test with Aetna insurance
+        - list [ref=e21]:
+          - listitem [ref=e22]:
+            - strong [ref=e23]: "Price:"
+            - text: $86.13 (negotiated rate)
+          - listitem [ref=e24]:
+            - strong [ref=e25]: "Hospital:"
+            - text: O'Connor Hospital (San Jose, CA)
+          - listitem [ref=e26]:
+            - strong [ref=e27]: "Test:"
+            - text: HC TB Test Cell Imm Measure
+          - listitem [ref=e28]:
+            - strong [ref=e29]: "Setting:"
+            - text: Outpatient
+          - listitem [ref=e30]:
+            - strong [ref=e31]: "Codes:"
+            - text: CDM:PX-30200848, CPT:86481, RC:302.0
+          - listitem [ref=e32]:
+            - strong [ref=e33]: "Source:"
+            - text: Negotiated rate with Aetna (COMMERCIAL (HMO/PPO) plan)
+        - paragraph [ref=e34]: This is the lowest negotiated price available for an Aetna‑covered TB test in the dataset. If you need additional details or other insurance options, let me know!
+      - paragraph [ref=e38]: What are other hospitals who do TB test in San Jose?
+      - paragraph [ref=e42]: "I hit a temporary model/tool timeout. Please retry with a narrower query (for example: city, insurer, or hospital)."
+      - paragraph [ref=e46]: What is best price for TB test in San Jose?
+    - generic [ref=e9]:
+      - textbox "Type your message..." [ref=e10]
+      - button "Sending..." [disabled] [ref=e48]

@@ -1,0 +1,10 @@
+{
+  "image_id": "5e0145aa58654a30b1a70d993ae0fba2",
+  "filename": "test_image.jpg",
+  "stored_filename": "5e0145aa58654a30b1a70d993ae0fba2.jpg",
+  "content_type": "image/jpeg",
+  "ocr_status": "failed",
+  "ocr_error": "500 Server Error: Internal Server Error for url: https://ai.api.nvidia.com/v1/cv/nvidia/ocdrnet",
+  "page_count": null,
+  "warnings": []
+}

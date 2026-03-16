@@ -1,0 +1,12 @@
+{
+  "image_id": "f8e26f29d98d48f5b4d031149518f93a",
+  "filename": "claims.pdf",
+  "stored_filename": "f8e26f29d98d48f5b4d031149518f93a.pdf",
+  "content_type": "application/pdf",
+  "ocr_status": "ready",
+  "ocr_error": null,
+  "page_count": 3,
+  "warnings": [
+    "Used embedded PDF text extraction."
+  ]
+}

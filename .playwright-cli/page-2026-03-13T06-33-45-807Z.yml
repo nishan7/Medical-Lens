@@ -1,0 +1,10 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - heading "LLM Chat" [level=1] [ref=e5]
+    - paragraph [ref=e6]: Minimal chat with streaming and image upload
+  - main [ref=e7]:
+    - generic [ref=e9]:
+      - textbox "Type your message..." [active] [ref=e10]: Say hello in one short sentence.
+      - generic [ref=e11]:
+        - generic [ref=e12] [cursor=pointer]: Attach photo
+        - button "Send" [ref=e13] [cursor=pointer]

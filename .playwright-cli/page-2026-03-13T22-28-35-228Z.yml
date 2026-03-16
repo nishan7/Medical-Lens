@@ -1,0 +1,9 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - heading "LLM Chat" [level=1] [ref=e5]
+    - paragraph [ref=e6]: Minimal chat with streaming
+  - main [ref=e7]:
+    - paragraph [ref=e15]: What is the cheapest TB test with insurance?
+    - generic [ref=e9]:
+      - textbox "Type your message..." [ref=e10]
+      - button "Sending..." [disabled] [ref=e17]
