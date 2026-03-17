@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     nvidia_model: str = "nvidia/nemotron-3-super-120b-a12b"
     nvidia_temperature: float = 0.7
     nvidia_top_p: float = 0.95
-    nvidia_max_tokens: int = 384
+    nvidia_max_tokens: int = 2048
     nvidia_reasoning_budget: int = 2048
     search_max_rows: int = 10
     tool_cache_enabled: bool = False
@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     tool_cache_path: str = ".cache/tool_cache.sqlite3"
     tool_cache_max_entries: int = 20000
     agent_recursion_limit: int = 8
-    chat_request_timeout_seconds: float = 60.0
+    chat_request_timeout_seconds: float = 120.0
     ocr_enabled: bool = True
     ocr_max_pdf_pages: int = 3
     ocr_max_text_chars: int = 12000

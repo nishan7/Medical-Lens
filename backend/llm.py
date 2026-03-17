@@ -13,8 +13,8 @@ from tools import get_langchain_tools
 
 
 Message = Dict[str, str]
-TOOL_WATCHDOG_SECONDS = 8.0
-TOOL_INVOKE_FALLBACK_TIMEOUT_SECONDS = 12.0
+TOOL_WATCHDOG_SECONDS = 30.0
+TOOL_INVOKE_FALLBACK_TIMEOUT_SECONDS = 60.0
 AGENT_RECURSION_LIMIT = max(1, int(settings.agent_recursion_limit))
 GENERIC_STREAM_FAILURE_MESSAGE = (
     "I hit a temporary model/tool timeout. "
@@ -67,13 +67,23 @@ def get_agent():
 
     tools = get_langchain_tools()
     system_prompt = (
-        "You are a helpful assistant for checking the bill details and charges and verify validate or critize them "
-        "Use tools when needed to answer questions about hospital standard charges. "
-        "If the user asks about hospital prices, procedures, codes, or searching the dataset, call an appropriate tool. "
-        "If required details are missing, ask a concise follow-up question. "
-        "Format responses as clean markdown with short paragraphs or a flat bullet list. "
-        "Avoid deeply nested lists and avoid empty bullet points. "
-        "Be concise and cite tool results."
+        "You are MedicalLens, an expert AI assistant specializing in US healthcare cost transparency. "
+        "Your mission is to help patients and consumers understand, validate, and navigate medical billing and hospital pricing.\n\n"
+        "## Core Capabilities\n"
+        "1. **Bill Analysis**: When a user uploads a medical bill, carefully analyze every line item. "
+        "Check for common billing errors: duplicate charges, upcoding, unbundling, charges for services not rendered, and compare against standard rates.\n"
+        "2. **Price Lookup**: Use the hospital search tools to find real-world standard charge rates from hospital datasets. "
+        "Always compare across insurers when relevant.\n"
+        "3. **Cost Optimization**: Proactively suggest cheaper alternatives, negotiation strategies, financial assistance programs, and when to dispute charges.\n\n"
+        "## Behavior Guidelines\n"
+        "- Always use available tools when asked about hospital prices, procedure codes, or insurer rates. "
+        "Call the most specific tool available (e.g., use `lc_hospital_cheapest_by_name` when the user wants cheapest options).\n"
+        "- If required details are missing (e.g., no insurer specified), ask ONE concise follow-up question.\n"
+        "- Format all responses as clean, readable markdown. Use tables for price comparisons. Use bullet lists for bill issues.\n"
+        "- Be empathetic — healthcare costs cause real stress. Acknowledge the concern before diving into analysis.\n"
+        "- Never invent prices or estimates. If you don't have data, say so and suggest how to find it.\n"
+        "- For bill analysis: lead with a summary (total amount, key issues found), then detail, then recommendations.\n"
+        "- Keep responses focused and scannable. Avoid deeply nested lists."
     )
 
     _agent = create_react_agent(model=client, tools=tools, prompt=system_prompt)
@@ -179,17 +189,21 @@ async def _agent_astream_events(messages: List[Message]) -> AsyncIterator[Dict[s
                     if tool_call_id in seen_tool_calls:
                         continue
                     seen_tool_calls.add(tool_call_id)
+                    tool_name = str(tool_call.get("name") or "")
                     logger.info(
                         "Agent tool_start name=%s input=%s",
-                        tool_call.get("name"),
+                        tool_name,
                         _jsonable(tool_call.get("args")),
                     )
+                    yield {"type": "tool_start", "tool": tool_name, "input": _jsonable(tool_call.get("args"))}
             elif isinstance(message, ToolMessage):
+                tool_name = str(getattr(message, "name", None) or step or "")
                 logger.info(
                     "Agent tool_end name=%s output=%s",
-                    getattr(message, "name", None) or step,
+                    tool_name,
                     _jsonable(getattr(message, "content_blocks", None) or message.content),
                 )
+                yield {"type": "tool_end", "tool": tool_name}
 
     yield {"type": "done"}
 
@@ -221,6 +235,11 @@ async def _stream_agent_events_with_watchdog(messages: List[Message], request_id
                 if delta:
                     token_seen = True
                     yield {"type": "token", "delta": delta, "request_id": request_id}
+            elif event_type == "tool_start":
+                token_seen = True  # Any activity resets the watchdog
+                yield {"type": "tool_start", "tool": event.get("tool", ""), "input": event.get("input"), "request_id": request_id}
+            elif event_type == "tool_end":
+                yield {"type": "tool_end", "tool": event.get("tool", ""), "request_id": request_id}
             elif event_type == "done":
                 yield {"type": "done", "request_id": request_id}
                 return
