@@ -23,13 +23,19 @@ GENERIC_STREAM_FAILURE_MESSAGE = (
 logger = logging.getLogger(__name__)
 
 
-def _build_client() -> ChatNVIDIA:
+def _client_kwargs(
+    *,
+    temperature: float | None = None,
+    max_completion_tokens: int | None = None,
+) -> Dict[str, Any]:
     base_kwargs: Dict[str, Any] = {
         "model": settings.nvidia_model,
         "api_key": settings.nvidia_api_key,
-        "temperature": settings.nvidia_temperature,
+        "temperature": settings.nvidia_temperature if temperature is None else temperature,
         "top_p": settings.nvidia_top_p,
-        "max_completion_tokens": settings.nvidia_max_tokens,
+        "max_completion_tokens": (
+            settings.nvidia_max_tokens if max_completion_tokens is None else max_completion_tokens
+        ),
         "chat_template_kwargs": {"enable_thinking": False},
     }
 
@@ -37,7 +43,24 @@ def _build_client() -> ChatNVIDIA:
     if "nemotron-3-super-120b" in settings.nvidia_model:
         base_kwargs["reasoning_budget"] = settings.nvidia_reasoning_budget
 
-    return ChatNVIDIA(**base_kwargs)
+    return base_kwargs
+
+
+def build_client(
+    *,
+    temperature: float | None = None,
+    max_completion_tokens: int | None = None,
+) -> ChatNVIDIA:
+    return ChatNVIDIA(
+        **_client_kwargs(
+            temperature=temperature,
+            max_completion_tokens=max_completion_tokens,
+        )
+    )
+
+
+def _build_client() -> ChatNVIDIA:
+    return build_client()
 
 
 client = _build_client()
@@ -98,6 +121,26 @@ def _extract_message_text(content: Any) -> str:
         return ""
 
     return str(content)
+
+
+def complete_text(
+    system_prompt: str,
+    user_prompt: str,
+    *,
+    temperature: float | None = None,
+    max_tokens: int | None = None,
+) -> str:
+    prompt_client = build_client(
+        temperature=temperature,
+        max_completion_tokens=max_tokens,
+    )
+    result = prompt_client.invoke(
+        [
+            SystemMessage(content=system_prompt),
+            HumanMessage(content=user_prompt),
+        ]
+    )
+    return _extract_message_text(getattr(result, "content", ""))
 
 
 def agent_chat(messages: List[Message]) -> str:

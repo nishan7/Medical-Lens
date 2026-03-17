@@ -9,6 +9,7 @@ from uuid import uuid4
 from fastapi import FastAPI, File, HTTPException, UploadFile, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
+from analyze import router as analyze_router
 from config import settings
 import llm
 import ocr
@@ -18,6 +19,7 @@ from tools import hospital_search_by_name
 
 app = FastAPI(title="RightCost Backend")
 logger = logging.getLogger(__name__)
+app.include_router(analyze_router)
 
 app.add_middleware(
     CORSMiddleware,

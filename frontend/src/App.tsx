@@ -4,6 +4,9 @@ import type { ChangeEvent, FormEvent, KeyboardEvent } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
+import { BillAnalyzer } from './components/BillAnalyzer'
+import { getApiBaseUrl, getWsUrl } from './lib/api'
+
 type Role = 'user' | 'assistant'
 
 type ChatMessage = {
@@ -31,34 +34,8 @@ type AttachmentState = 'pending' | 'uploading' | 'ready' | 'failed'
 const STREAM_FLUSH_INTERVAL_MS = 33
 const STREAM_CHARS_PER_TICK = 48
 
-function getApiBaseUrl(): string {
-  const configured = import.meta.env.VITE_API_BASE_URL
-  if (configured) {
-    return configured.replace(/\/$/, '')
-  }
-
-  if (typeof window === 'undefined') {
-    return 'http://localhost:8000'
-  }
-
-  return `${window.location.protocol}//${window.location.hostname}:8000`
-}
-
-function getWsUrl(): string {
-  const configured = import.meta.env.VITE_WS_URL
-  if (configured) {
-    return configured
-  }
-
-  if (typeof window === 'undefined') {
-    return 'ws://localhost:8000/ws/chat'
-  }
-
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-  return `${protocol}//${window.location.hostname}:8000/ws/chat`
-}
-
 function App() {
+  const [mode, setMode] = useState<'chat' | 'analyze'>('chat')
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
   const [isSending, setIsSending] = useState(false)
@@ -335,77 +312,101 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>RightCost</h1>
-        <p>Healthcare pricing chat with streaming</p>
-      </header>
-
-      <main className="chat-container">
-        <div className="chat-window">
-          {messages.map((m) => (
-            <div
-              key={m.id}
-              className={`bubble ${m.role === 'user' ? 'bubble-user' : 'bubble-assistant'}`}
-            >
-              {m.attachmentName && (
-                <div className="bubble-meta">
-                  Bill: {m.attachmentName}
-                </div>
-              )}
-              <div className="bubble-content bubble-markdown">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {m.content}
-                </ReactMarkdown>
-              </div>
-            </div>
-          ))}
-          <div ref={chatEndRef} />
-        </div>
-
-        <form ref={formRef} className="input-area" onSubmit={handleSubmit}>
-          <div className="attachment-row">
-            <label className="file-button">
-              <input
-                ref={fileInputRef}
-                className="file-input"
-                type="file"
-                accept="image/jpeg,image/png,image/webp,application/pdf"
-                onChange={handleFileChange}
-              />
-              {attachedFile ? 'Replace bill' : 'Attach bill (image/PDF)'}
-            </label>
-            {attachedFile && (
-              <div className="attachment-chip">
-                <span className="attachment-name">{attachedFile.name}</span>
-                <span className="attachment-status">
-                  {attachmentState || 'pending'}
-                  {attachmentOcrStatus ? ` / OCR ${attachmentOcrStatus}` : ''}
-                </span>
-                <button type="button" className="chip-remove" onClick={clearAttachment}>
-                  Remove
-                </button>
-              </div>
-            )}
+        <div className="app-header-row">
+          <div>
+            <h1>RightCost</h1>
+            <p>Healthcare pricing chat and autonomous bill analysis</p>
           </div>
-
-          {attachmentError && (
-            <div className="attachment-error">{attachmentError}</div>
-          )}
-
-          <textarea
-            className="text-input"
-            placeholder="Type your message..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleTextareaKeyDown}
-            rows={2}
-          />
-          <div className="input-row">
-            <button className="send-button" type="submit" disabled={isSending}>
-              {isSending ? 'Sending...' : 'Send'}
+          <div className="mode-toggle" role="tablist" aria-label="Application mode">
+            <button
+              type="button"
+              className={`mode-toggle-button ${mode === 'chat' ? 'is-active' : ''}`}
+              onClick={() => setMode('chat')}
+            >
+              Chat Mode
+            </button>
+            <button
+              type="button"
+              className={`mode-toggle-button ${mode === 'analyze' ? 'is-active' : ''}`}
+              onClick={() => setMode('analyze')}
+            >
+              Analyze Mode
             </button>
           </div>
-        </form>
-      </main>
+        </div>
+      </header>
+
+      {mode === 'chat' ? (
+        <main className="chat-container">
+          <div className="chat-window">
+            {messages.map((m) => (
+              <div
+                key={m.id}
+                className={`bubble ${m.role === 'user' ? 'bubble-user' : 'bubble-assistant'}`}
+              >
+                {m.attachmentName && (
+                  <div className="bubble-meta">
+                    Bill: {m.attachmentName}
+                  </div>
+                )}
+                <div className="bubble-content bubble-markdown">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {m.content}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            ))}
+            <div ref={chatEndRef} />
+          </div>
+
+          <form ref={formRef} className="input-area" onSubmit={handleSubmit}>
+            <div className="attachment-row">
+              <label className="file-button">
+                <input
+                  ref={fileInputRef}
+                  className="file-input"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,application/pdf"
+                  onChange={handleFileChange}
+                />
+                {attachedFile ? 'Replace bill' : 'Attach bill (image/PDF)'}
+              </label>
+              {attachedFile && (
+                <div className="attachment-chip">
+                  <span className="attachment-name">{attachedFile.name}</span>
+                  <span className="attachment-status">
+                    {attachmentState || 'pending'}
+                    {attachmentOcrStatus ? ` / OCR ${attachmentOcrStatus}` : ''}
+                  </span>
+                  <button type="button" className="chip-remove" onClick={clearAttachment}>
+                    Remove
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {attachmentError && (
+              <div className="attachment-error">{attachmentError}</div>
+            )}
+
+            <textarea
+              className="text-input"
+              placeholder="Type your message..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleTextareaKeyDown}
+              rows={2}
+            />
+            <div className="input-row">
+              <button className="send-button" type="submit" disabled={isSending}>
+                {isSending ? 'Sending...' : 'Send'}
+              </button>
+            </div>
+          </form>
+        </main>
+      ) : (
+        <BillAnalyzer />
+      )}
     </div>
   )
 }

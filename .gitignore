@@ -1,2 +1,25 @@
-data/
-data copy
+# IDE and OS clutter
+.idea/
+.DS_Store
+
+# Python cache and local env files
+**/__pycache__/
+*.py[cod]
+.env
+backend/.env
+
+# Local tool/runtime outputs
+.cache/
+.playwright-cli/
+backend/uploads/
+uploads/
+
+# Keep the helper scripts in data/, but never publish the raw datasets.
+data/*
+!data/check.py
+!data/format.md
+!data/preprocess.py
+!data/search.py
+
+# Local copies of datasets should stay out of git.
+data copy/
